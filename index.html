@@ -1,319 +1,368 @@
 <!doctype html>
 <html lang="en" dir="ltr">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" href="./favicon.png" />
-		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<!-- Cache control for WebView environments (Expo, React Native) -->
-		<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-		<meta http-equiv="Pragma" content="no-cache" />
-		<meta http-equiv="Expires" content="0" />
-		<style>	
-			html {height: 100%;padding: 0;display: flex;flex-direction: column;}
-			body{min-height: 100vh;flex: 1; display: flex;flex-direction: column;}
-		</style>
-		<script>
-			// Load theme early to prevent blinking
-			(function() {
-				try {
-					const savedChart = localStorage.getItem('chart');
-					if (savedChart) {
-						const chartData = JSON.parse(savedChart);
-						if (chartData.theme) {
-							document.documentElement.setAttribute('data-theme', chartData.theme);
-							
-							// Set CSS variables immediately based on theme
-							const root = document.documentElement;
-							if (chartData.theme === 'dark') {
-								root.style.setProperty('--border-color', '#292929');
-								root.style.setProperty('--background-color', '#0f0f0f');
-								root.style.setProperty('--text-color', '#cccccc');
-							} else {
-								root.style.setProperty('--border-color', '#ebedf1');
-								root.style.setProperty('--background-color', '#ffffff');
-								root.style.setProperty('--text-color', '#051441');
-							}
-						}
-					}
-				} catch (e) {
-					// Fallback to default theme if error
-					console.log('Theme loading error:', e);
-				}
-			})();
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="./favicon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- Cache control for WebView environments (Expo, React Native) -->
+    <meta
+      http-equiv="Cache-Control"
+      content="no-cache, no-store, must-revalidate"
+    />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <style>
+      html {
+        height: 100%;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+      }
+      body {
+        min-height: 100vh;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+      }
+    </style>
+    <script>
+      // Load theme early to prevent blinking
+      (function () {
+        try {
+          const savedChart = localStorage.getItem("chart");
+          if (savedChart) {
+            const chartData = JSON.parse(savedChart);
+            if (chartData.theme) {
+              document.documentElement.setAttribute(
+                "data-theme",
+                chartData.theme,
+              );
 
-			// Early sidebar state restoration to prevent flashing
-			(function() {
-				try {
-					// Constants
-					const MIN_WIDTH = 180;
-					const MAX_WIDTH = 480;
-					const DEFAULT_WIDTH = 280;
-					const PRICE_SCALE_WIDTH = 80;
+              // Set CSS variables immediately based on theme
+              const root = document.documentElement;
+              if (chartData.theme === "dark") {
+                root.style.setProperty("--border-color", "#292929");
+                root.style.setProperty("--background-color", "#0f0f0f");
+                root.style.setProperty("--text-color", "#cccccc");
+              } else {
+                root.style.setProperty("--border-color", "#ebedf1");
+                root.style.setProperty("--background-color", "#ffffff");
+                root.style.setProperty("--text-color", "#051441");
+              }
+            }
+          }
+        } catch (e) {
+          // Fallback to default theme if error
+          console.log("Theme loading error:", e);
+        }
+      })();
 
-					// Helper functions
-					function parseBool(value, fallback) {
-						if (value === null) return fallback;
-						return value === 'true';
-					}
+      // Early sidebar state restoration to prevent flashing
+      (function () {
+        try {
+          // Constants
+          const MIN_WIDTH = 180;
+          const MAX_WIDTH = 480;
+          const DEFAULT_WIDTH = 280;
+          const PRICE_SCALE_WIDTH = 80;
 
-					function clampWidth(value, min, max, fallback) {
-						if (isNaN(value) || value < min || value > max) {
-							return fallback;
-						}
-						return value;
-					}
+          // Helper functions
+          function parseBool(value, fallback) {
+            if (value === null) return fallback;
+            return value === "true";
+          }
 
-					function checkContainerSize() {
-						const containerWidth = window.innerWidth;
-						const minChartWidth = 300;
-						const minRequiredWidth = MIN_WIDTH + PRICE_SCALE_WIDTH + minChartWidth;
-						return containerWidth >= minRequiredWidth;
-					}
+          function clampWidth(value, min, max, fallback) {
+            if (isNaN(value) || value < min || value > max) {
+              return fallback;
+            }
+            return value;
+          }
 
-					// Read persisted state
-					const persistedVisible = localStorage.getItem('dutyai.chart.sidebar.visible');
-					const persistedWidth = localStorage.getItem('dutyai.chart.sidebar.widthPx');
-					
-					let visible = parseBool(persistedVisible, false);
-					let widthPx = clampWidth(parseInt(persistedWidth || '', 10), MIN_WIDTH, MAX_WIDTH, DEFAULT_WIDTH);
+          function checkContainerSize() {
+            const containerWidth = window.innerWidth;
+            const minChartWidth = 300;
+            const minRequiredWidth =
+              MIN_WIDTH + PRICE_SCALE_WIDTH + minChartWidth;
+            return containerWidth >= minRequiredWidth;
+          }
 
-					// Auto-collapse if container is too narrow
-					if (visible && !checkContainerSize()) {
-						visible = false;
-						widthPx = 0;
-					}
+          // Read persisted state
+          const persistedVisible = localStorage.getItem(
+            "dutyai.chart.sidebar.visible",
+          );
+          const persistedWidth = localStorage.getItem(
+            "dutyai.chart.sidebar.widthPx",
+          );
 
-					// Store bootstrap state globally for components to use
-					window.__sidebarBootstrap = {
-						visible: visible,
-						widthPx: visible ? widthPx : 0,
-						transitionsEnabled: false
-					};
+          let visible = parseBool(persistedVisible, false);
+          let widthPx = clampWidth(
+            parseInt(persistedWidth || "", 10),
+            MIN_WIDTH,
+            MAX_WIDTH,
+            DEFAULT_WIDTH,
+          );
 
-					// Set initial CSS variables to prevent layout shift
-					const root = document.documentElement;
-					root.style.setProperty('--sidebar-width', visible ? widthPx + 'px' : '0px');
-					root.style.setProperty('--sidebar-visible', visible ? '1' : '0');
-					root.style.setProperty('--chart-sidebar-width', visible ? widthPx + 'px' : '0px');
-					root.style.setProperty('--chart-sidebar-visible', visible ? '1' : '0');
-					
-				} catch (e) {
-					console.warn('Sidebar bootstrap error:', e);
-					// Fallback state
-					window.__sidebarBootstrap = {
-						visible: false,
-						widthPx: 0,
-						transitionsEnabled: false
-					};
-					// Set fallback CSS variables
-					const root = document.documentElement;
-					root.style.setProperty('--sidebar-width', '0px');
-					root.style.setProperty('--sidebar-visible', '0');
-					root.style.setProperty('--chart-sidebar-width', '0px');
-					root.style.setProperty('--chart-sidebar-visible', '0');
-				}
-			})();
-		</script>
+          // Auto-collapse if container is too narrow
+          if (visible && !checkContainerSize()) {
+            visible = false;
+            widthPx = 0;
+          }
 
-		<!-- No-flash CSS rules to prevent sidebar visibility during initial paint -->
-		<style>
-			/* Prevent sidebar from being visible during initial paint if not supposed to be visible */
-			.sidebar-container {
-				width: var(--sidebar-width, 0px) !important;
-				transition: none !important;
-				overflow: hidden;
-			}
-			
-			/* Ensure chart content takes up correct space from the start */
-			.chart-container {
-				--chart-content-width: calc(100% - var(--chart-sidebar-width, 0px));
-			}
-			
-			.kline-content {
-				width: var(--chart-content-width, 100%) !important;
-			}
-			
-			/* Hide sidebar completely if not visible */
-			.sidebar-container[data-visible="false"] {
-				display: none !important;
-			}
-			
-			/* Disable all transitions during initial load */
-			.sidebar-container,
-			.sidebar-container *,
-			.chart-container,
-			.chart-container *,
-			.kline-content,
-			.kline-content * {
-				transition: none !important;
-			}
+          // Store bootstrap state globally for components to use
+          window.__sidebarBootstrap = {
+            visible: visible,
+            widthPx: visible ? widthPx : 0,
+            transitionsEnabled: false,
+          };
 
-			/* ---------- Improved click ripple (clean + beautiful) ---------- */
-			:root {
-				--ripple-duration: 560ms;
-				--ripple-press-scale: 0.985;
-			}
-			:root[data-theme="dark"] {
-				--ripple-color: rgba(255, 255, 255, 0.22);
-				--ripple-highlight: rgba(255, 255, 255, 0.08);
-			}
-			:root[data-theme="light"] {
-				--ripple-color: rgba(0, 0, 0, 0.18);
-				--ripple-highlight: rgba(0, 0, 0, 0.05);
-			}
+          // Set initial CSS variables to prevent layout shift
+          const root = document.documentElement;
+          root.style.setProperty(
+            "--sidebar-width",
+            visible ? widthPx + "px" : "0px",
+          );
+          root.style.setProperty("--sidebar-visible", visible ? "1" : "0");
+          root.style.setProperty(
+            "--chart-sidebar-width",
+            visible ? widthPx + "px" : "0px",
+          );
+          root.style.setProperty(
+            "--chart-sidebar-visible",
+            visible ? "1" : "0",
+          );
+        } catch (e) {
+          console.warn("Sidebar bootstrap error:", e);
+          // Fallback state
+          window.__sidebarBootstrap = {
+            visible: false,
+            widthPx: 0,
+            transitionsEnabled: false,
+          };
+          // Set fallback CSS variables
+          const root = document.documentElement;
+          root.style.setProperty("--sidebar-width", "0px");
+          root.style.setProperty("--sidebar-visible", "0");
+          root.style.setProperty("--chart-sidebar-width", "0px");
+          root.style.setProperty("--chart-sidebar-visible", "0");
+        }
+      })();
+    </script>
 
-			/* Opt-in surfaces: native button, common .btn/.icon-button and [data-ripple] */
-			button,
-			.btn,
-			.icon-button,
-			[data-ripple] {
-				position: relative;
-				overflow: hidden;
-				cursor: pointer;
-				-webkit-tap-highlight-color: transparent;
-				transition: transform 90ms ease, filter 120ms ease;
-				will-change: transform;
-			}
-			button:active,
-			.btn:active,
-			.icon-button:active,
-			[data-ripple]:active {
-				transform: scale(var(--ripple-press-scale));
-				filter: brightness(0.985);
-			}
+    <!-- No-flash CSS rules to prevent sidebar visibility during initial paint -->
+    <style>
+      /* Prevent sidebar from being visible during initial paint if not supposed to be visible */
+      .sidebar-container {
+        width: var(--sidebar-width, 0px) !important;
+        transition: none !important;
+        overflow: hidden;
+      }
 
-			/* Subtle highlight on press */
-			button::before,
-			.btn::before,
-			.icon-button::before,
-			[data-ripple]::before {
-				content: "";
-				position: absolute;
-				inset: 0;
-				background: var(--ripple-highlight);
-				opacity: 0;
-				transition: opacity 120ms ease;
-				pointer-events: none;
-			}
-			button:active::before,
-			.btn:active::before,
-			.icon-button:active::before,
-			[data-ripple]:active::before {
-				opacity: 1;
-			}
+      /* Ensure chart content takes up correct space from the start */
+      .chart-container {
+        --chart-content-width: calc(100% - var(--chart-sidebar-width, 0px));
+      }
 
-			/* The ripple wave node (JS-inserted) */
-			.ripple-wave {
-				position: absolute;
-				left: 0;
-				top: 0;
-				border-radius: 50%;
-				transform: translate(-50%, -50%) scale(0);
-				pointer-events: none;
-				width: var(--rw, 12px);
-				height: var(--rw, 12px);
-				opacity: 0.9;
-				background: radial-gradient(
-					circle at center,
-					var(--ripple-color) 0%,
-					color-mix(in oklab, var(--ripple-color) 70%, transparent) 45%,
-					transparent 70%
-				);
-				animation: ripple-wave var(--ripple-duration) ease-out forwards;
-				filter: blur(0.25px);
-			}
-			@keyframes ripple-wave {
-				to {
-					transform: translate(-50%, -50%) scale(1);
-					opacity: 0;
-				}
-			}
+      .kline-content {
+        width: var(--chart-content-width, 100%) !important;
+      }
 
-			/* Reduced motion */
-			@media (prefers-reduced-motion: reduce) {
-				button,
-				.btn,
-				.icon-button,
-				[data-ripple] {
-					transition: none;
-				}
-				.ripple-wave {
-					animation: none;
-					opacity: 0;
-				}
-			}
+      /* Hide sidebar completely if not visible */
+      .sidebar-container[data-visible="false"] {
+        display: none !important;
+      }
 
-			/* ---------- Trading Typography: professional, crisp, numeric-aligned ---------- */
-			:root {
-				--trading-font: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI",
-					Roboto, "Helvetica Neue", Arial, "Noto Sans", "Inter", sans-serif;
-				--trading-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
-					"Liberation Mono", "Courier New", monospace;
-				--trading-letter-spacing: 0.015em; /* subtle global */
-				--trading-label-spacing: 0.035em;  /* labels/buttons */
-				--trading-line-height: 1.35;
-			}
-			/* Apply to key surfaces without fighting component styles */
-			body,
-			button,
-			input,
-			select,
-			textarea,
-			.kline-main,
-			.menu-container,
-			.btn,
-			[data-ripple],
-			.chart-container,
-			.kline-content {
-				font-family: var(--trading-font);
-				line-height: var(--trading-line-height);
-				letter-spacing: var(--trading-letter-spacing);
-				-webkit-font-smoothing: antialiased;
-				-moz-osx-font-smoothing: grayscale;
-				text-rendering: optimizeLegibility;
-				/* Align important numbers (prices, volumes, timestamps) */
-				font-variant-numeric: tabular-nums lining-nums;
-				font-feature-settings: "tnum" 1, "lnum" 1, "liga" 1, "calt" 1;
-			}
-			/* Stronger label feel for actionable UI */
-			.kline-main .menu-text,
-			.kline-main .timeframe-text,
-			.kline-main .symbol-name,
-			.menu-container .menu-text,
-			.menu-container .timeframe-text,
-			.menu-container .symbol-name,
-			.btn {
-				letter-spacing: var(--trading-label-spacing);
-				font-weight: 600;
-			}
-			/* Any generic numeric class gets tabular treatment explicitly */
-			.number, .value, .price, .volume, .percent, .date, .time {
-				font-variant-numeric: tabular-nums lining-nums;
-				font-feature-settings: "tnum" 1, "lnum" 1;
-			}
-		</style>
-		
-		<link href="./_app/immutable/assets/0.m1E-RF6Q.css" rel="stylesheet">
+      /* Disable all transitions during initial load */
+      .sidebar-container,
+      .sidebar-container *,
+      .chart-container,
+      .chart-container *,
+      .kline-content,
+      .kline-content * {
+        transition: none !important;
+      }
+
+      /* ---------- Improved click ripple (clean + beautiful) ---------- */
+      :root {
+        --ripple-duration: 560ms;
+        --ripple-press-scale: 0.985;
+      }
+      :root[data-theme="dark"] {
+        --ripple-color: rgba(255, 255, 255, 0.22);
+        --ripple-highlight: rgba(255, 255, 255, 0.08);
+      }
+      :root[data-theme="light"] {
+        --ripple-color: rgba(0, 0, 0, 0.18);
+        --ripple-highlight: rgba(0, 0, 0, 0.05);
+      }
+
+      /* Opt-in surfaces: native button, common .btn/.icon-button and [data-ripple] */
+      button,
+      .btn,
+      .icon-button,
+      [data-ripple] {
+        position: relative;
+        overflow: hidden;
+        cursor: pointer;
+        -webkit-tap-highlight-color: transparent;
+        transition:
+          transform 90ms ease,
+          filter 120ms ease;
+        will-change: transform;
+      }
+      button:active,
+      .btn:active,
+      .icon-button:active,
+      [data-ripple]:active {
+        transform: scale(var(--ripple-press-scale));
+        filter: brightness(0.985);
+      }
+
+      /* Subtle highlight on press */
+      button::before,
+      .btn::before,
+      .icon-button::before,
+      [data-ripple]::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: var(--ripple-highlight);
+        opacity: 0;
+        transition: opacity 120ms ease;
+        pointer-events: none;
+      }
+      button:active::before,
+      .btn:active::before,
+      .icon-button:active::before,
+      [data-ripple]:active::before {
+        opacity: 1;
+      }
+
+      /* The ripple wave node (JS-inserted) */
+      .ripple-wave {
+        position: absolute;
+        left: 0;
+        top: 0;
+        border-radius: 50%;
+        transform: translate(-50%, -50%) scale(0);
+        pointer-events: none;
+        width: var(--rw, 12px);
+        height: var(--rw, 12px);
+        opacity: 0.9;
+        background: radial-gradient(
+          circle at center,
+          var(--ripple-color) 0%,
+          color-mix(in oklab, var(--ripple-color) 70%, transparent) 45%,
+          transparent 70%
+        );
+        animation: ripple-wave var(--ripple-duration) ease-out forwards;
+        filter: blur(0.25px);
+      }
+      @keyframes ripple-wave {
+        to {
+          transform: translate(-50%, -50%) scale(1);
+          opacity: 0;
+        }
+      }
+
+      /* Reduced motion */
+      @media (prefers-reduced-motion: reduce) {
+        button,
+        .btn,
+        .icon-button,
+        [data-ripple] {
+          transition: none;
+        }
+        .ripple-wave {
+          animation: none;
+          opacity: 0;
+        }
+      }
+
+      /* ---------- Trading Typography: professional, crisp, numeric-aligned ---------- */
+      :root {
+        --trading-font: ui-sans-serif, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Inter",
+          sans-serif;
+        --trading-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+          "Liberation Mono", "Courier New", monospace;
+        --trading-letter-spacing: 0.015em; /* subtle global */
+        --trading-label-spacing: 0.035em; /* labels/buttons */
+        --trading-line-height: 1.35;
+      }
+      /* Apply to key surfaces without fighting component styles */
+      body,
+      button,
+      input,
+      select,
+      textarea,
+      .kline-main,
+      .menu-container,
+      .btn,
+      [data-ripple],
+      .chart-container,
+      .kline-content {
+        font-family: var(--trading-font);
+        line-height: var(--trading-line-height);
+        letter-spacing: var(--trading-letter-spacing);
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        text-rendering: optimizeLegibility;
+        /* Align important numbers (prices, volumes, timestamps) */
+        font-variant-numeric: tabular-nums lining-nums;
+        font-feature-settings:
+          "tnum" 1,
+          "lnum" 1,
+          "liga" 1,
+          "calt" 1;
+      }
+      /* Stronger label feel for actionable UI */
+      .kline-main .menu-text,
+      .kline-main .timeframe-text,
+      .kline-main .symbol-name,
+      .menu-container .menu-text,
+      .menu-container .timeframe-text,
+      .menu-container .symbol-name,
+      .btn {
+        letter-spacing: var(--trading-label-spacing);
+        font-weight: 600;
+      }
+      /* Any generic numeric class gets tabular treatment explicitly */
+      .number,
+      .value,
+      .price,
+      .volume,
+      .percent,
+      .date,
+      .time {
+        font-variant-numeric: tabular-nums lining-nums;
+        font-feature-settings:
+          "tnum" 1,
+          "lnum" 1;
+      }
+    </style>
+    
+		<link href="./_app/immutable/assets/0.CaACNEkz.css" rel="stylesheet">
 		<link href="./_app/immutable/assets/alert.B3IZgsFc.css" rel="stylesheet">
-		<link href="./_app/immutable/assets/2.Bs4e9VaR.css" rel="stylesheet">
-		<link rel="modulepreload" href="./_app/immutable/entry/start.BflvcCDb.js">
-		<link rel="modulepreload" href="./_app/immutable/chunks/entry.B3hhfV56.js">
-		<link rel="modulepreload" href="./_app/immutable/entry/app.CoUOgpIs.js">
-		<link rel="modulepreload" href="./_app/immutable/chunks/i18n.CRyVuPbB.js">
-		<link rel="modulepreload" href="./_app/immutable/chunks/stores.BwEpfDsH.js">
-		<link rel="modulepreload" href="./_app/immutable/chunks/runtime.hwSqzVCu.js">
-		<link rel="modulepreload" href="./_app/immutable/chunks/index-client.D-C6kEw5.js">
-		<link rel="modulepreload" href="./_app/immutable/nodes/0.CKx6IobD.js">
-		<link rel="modulepreload" href="./_app/immutable/chunks/alert.DHRDhQHq.js">
-		<link rel="modulepreload" href="./_app/immutable/chunks/lifecycle.DUZF4H2h.js">
-		<link rel="modulepreload" href="./_app/immutable/nodes/2.B9eW4Uk8.js"><!--[--><!--[--><!--[--><!--[--><link rel="alternate" hreflang="en" href="http://sveltekit-prerender/"><link rel="alternate" hreflang="zh-CN" href="http://sveltekit-prerender/zh-CN/"><!--]--><!--]--><!--]--><!--]-->
-	</head>
-	<body data-sveltekit-preload-data="hover">
-		<div style="display: contents;"><!--[--><!--[--><!----><!----><!----><div class="alerts-container svelte-1ykjk67"><!--[--><!--]--></div> <!----><!--[!--><!--]--><!----><!----><!----><!----><!----><!--]--> <!--[!--><!--]--><!--]-->
+		<link href="./_app/immutable/assets/2.DKL3NC7f.css" rel="stylesheet">
+		<link rel="modulepreload" href="./_app/immutable/entry/start.CYlOvXnV.js">
+		<link rel="modulepreload" href="./_app/immutable/chunks/entry.CDT3VMYp.js">
+		<link rel="modulepreload" href="./_app/immutable/entry/app.C6i2Yp5n.js">
+		<link rel="modulepreload" href="./_app/immutable/chunks/i18n.DBPN0ATu.js">
+		<link rel="modulepreload" href="./_app/immutable/chunks/stores.Bf9iV44F.js">
+		<link rel="modulepreload" href="./_app/immutable/chunks/runtime.PawK9FFV.js">
+		<link rel="modulepreload" href="./_app/immutable/chunks/index-client.Cjm4rGeW.js">
+		<link rel="modulepreload" href="./_app/immutable/nodes/0.DKp0s6Yn.js">
+		<link rel="modulepreload" href="./_app/immutable/chunks/alert.C1mAKnVD.js">
+		<link rel="modulepreload" href="./_app/immutable/chunks/lifecycle.VOAnSHTf.js">
+		<link rel="modulepreload" href="./_app/immutable/nodes/2.DvDzdsuH.js"><!--[--><!--[--><!--[--><!--[--><link rel="alternate" hreflang="en" href="http://sveltekit-prerender/"><link rel="alternate" hreflang="zh-CN" href="http://sveltekit-prerender/zh-CN/"><!--]--><!--]--><!--]--><!--]-->
+  </head>
+  <body data-sveltekit-preload-data="hover">
+    <div style="display: contents"><!--[--><!--[--><!----><!----><!----><div class="alerts-container svelte-1ykjk67"><!--[--><!--]--></div> <!----><!--[!--><!--]--><!----><!----><!----><!----><!----><!--]--> <!--[!--><!--]--><!--]-->
 			
 			<script>
 				{
-					__sveltekit_q6lutv = {
+					__sveltekit_1f9eu6u = {
 						base: new URL(".", location).pathname.slice(0, -1)
 					};
 
@@ -322,8 +371,8 @@
 					const data = [null,null];
 
 					Promise.all([
-						import("./_app/immutable/entry/start.BflvcCDb.js"),
-						import("./_app/immutable/entry/app.CoUOgpIs.js")
+						import("./_app/immutable/entry/start.CYlOvXnV.js"),
+						import("./_app/immutable/entry/app.C6i2Yp5n.js")
 					]).then(([kit, app]) => {
 						kit.start(app, element, {
 							node_ids: [0, 2],
@@ -335,44 +384,54 @@
 				}
 			</script>
 		</div>
-		<script>
-			// Delegated ripple creator: appends a wave node at click/press point
-			(function () {
-				try {
-					const SELECTOR = 'button, .btn, .icon-button, [data-ripple]';
+    <script>
+      // Delegated ripple creator: appends a wave node at click/press point
+      (function () {
+        try {
+          const SELECTOR = "button, .btn, .icon-button, [data-ripple]";
 
-					function createWave(target, x, y) {
-						const rect = target.getBoundingClientRect();
-						const maxDim = Math.max(rect.width, rect.height);
-						const size = maxDim * 2.1; // ensure covers from click point to farthest corner
-						const wave = document.createElement('span');
-						wave.className = 'ripple-wave';
-						wave.style.left = x + 'px';
-						wave.style.top = y + 'px';
-						wave.style.setProperty('--rw', size + 'px');
-						target.appendChild(wave);
-						wave.addEventListener('animationend', () => wave.remove(), { once: true });
-					}
+          function createWave(target, x, y) {
+            const rect = target.getBoundingClientRect();
+            const maxDim = Math.max(rect.width, rect.height);
+            const size = maxDim * 2.1; // ensure covers from click point to farthest corner
+            const wave = document.createElement("span");
+            wave.className = "ripple-wave";
+            wave.style.left = x + "px";
+            wave.style.top = y + "px";
+            wave.style.setProperty("--rw", size + "px");
+            target.appendChild(wave);
+            wave.addEventListener("animationend", () => wave.remove(), {
+              once: true,
+            });
+          }
 
-					document.addEventListener('pointerdown', (ev) => {
-						const target = ev.target && ev.target.closest && ev.target.closest(SELECTOR);
-						if (!target) return;
-						const rect = target.getBoundingClientRect();
-						createWave(target, ev.clientX - rect.left, ev.clientY - rect.top);
-					}, { passive: true });
+          document.addEventListener(
+            "pointerdown",
+            (ev) => {
+              const target =
+                ev.target && ev.target.closest && ev.target.closest(SELECTOR);
+              if (!target) return;
+              const rect = target.getBoundingClientRect();
+              createWave(target, ev.clientX - rect.left, ev.clientY - rect.top);
+            },
+            { passive: true },
+          );
 
-					// Keyboard accessibility: ripple from center on Enter/Space
-					document.addEventListener('keydown', (ev) => {
-						if (ev.key !== 'Enter' && ev.key !== ' ') return;
-						const active = document.activeElement && document.activeElement.closest && document.activeElement.closest(SELECTOR);
-						if (!active) return;
-						const rect = active.getBoundingClientRect();
-						createWave(active, rect.width / 2, rect.height / 2);
-					});
-				} catch (e) {
-					console.warn('Ripple bootstrap failed:', e);
-				}
-			})();
-		</script>
-	</body>
+          // Keyboard accessibility: ripple from center on Enter/Space
+          document.addEventListener("keydown", (ev) => {
+            if (ev.key !== "Enter" && ev.key !== " ") return;
+            const active =
+              document.activeElement &&
+              document.activeElement.closest &&
+              document.activeElement.closest(SELECTOR);
+            if (!active) return;
+            const rect = active.getBoundingClientRect();
+            createWave(active, rect.width / 2, rect.height / 2);
+          });
+        } catch (e) {
+          console.warn("Ripple bootstrap failed:", e);
+        }
+      })();
+    </script>
+  </body>
 </html>
