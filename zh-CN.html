@@ -346,24 +346,24 @@
 		<link href="./_app/immutable/assets/0.C4Daam1Z.css" rel="stylesheet">
 		<link href="./_app/immutable/assets/alert.B3IZgsFc.css" rel="stylesheet">
 		<link href="./_app/immutable/assets/2.DZ4S-35d.css" rel="stylesheet">
-		<link rel="modulepreload" href="./_app/immutable/entry/start.Dxfo1Xl8.js">
-		<link rel="modulepreload" href="./_app/immutable/chunks/entry.BFbRQeWj.js">
-		<link rel="modulepreload" href="./_app/immutable/entry/app.C5u_QAoN.js">
-		<link rel="modulepreload" href="./_app/immutable/chunks/preload-helper.CGFz8zj7.js">
-		<link rel="modulepreload" href="./_app/immutable/chunks/i18n.C0pNdyUA.js">
-		<link rel="modulepreload" href="./_app/immutable/chunks/stores.CyDomSUN.js">
-		<link rel="modulepreload" href="./_app/immutable/chunks/runtime.DW03LcT7.js">
-		<link rel="modulepreload" href="./_app/immutable/nodes/0.BJtobDXK.js">
-		<link rel="modulepreload" href="./_app/immutable/chunks/alert.DmmnoLXu.js">
-		<link rel="modulepreload" href="./_app/immutable/chunks/lifecycle.C4svvUm7.js">
-		<link rel="modulepreload" href="./_app/immutable/nodes/2.DzUwG4ie.js"><!--[--><!--[--><!--[--><!--[--><link rel="alternate" hreflang="en" href="http://sveltekit-prerender/"><link rel="alternate" hreflang="zh-CN" href="http://sveltekit-prerender/zh-CN/"><!--]--><!--]--><!--]--><!--]-->
+		<link rel="modulepreload" href="./_app/immutable/entry/start.CClflTLA.js">
+		<link rel="modulepreload" href="./_app/immutable/chunks/entry.DwCxY6X1.js">
+		<link rel="modulepreload" href="./_app/immutable/entry/app.CmbOXXjU.js">
+		<link rel="modulepreload" href="./_app/immutable/chunks/preload-helper.Bp6m93ot.js">
+		<link rel="modulepreload" href="./_app/immutable/chunks/i18n.BuKtLF_k.js">
+		<link rel="modulepreload" href="./_app/immutable/chunks/stores.Caz8ZAgF.js">
+		<link rel="modulepreload" href="./_app/immutable/chunks/runtime.DES4CUAr.js">
+		<link rel="modulepreload" href="./_app/immutable/nodes/0.BBPvlJC1.js">
+		<link rel="modulepreload" href="./_app/immutable/chunks/alert.CRIJIGQt.js">
+		<link rel="modulepreload" href="./_app/immutable/chunks/lifecycle.xwHf16cN.js">
+		<link rel="modulepreload" href="./_app/immutable/nodes/2.9Joqpabq.js"><!--[--><!--[--><!--[--><!--[--><link rel="alternate" hreflang="en" href="http://sveltekit-prerender/"><link rel="alternate" hreflang="zh-CN" href="http://sveltekit-prerender/zh-CN/"><!--]--><!--]--><!--]--><!--]-->
   </head>
   <body data-sveltekit-preload-data="hover">
     <div style="display: contents"><!--[--><!--[--><!----><!----><!----><div class="alerts-container svelte-1ykjk67"><!--[--><!--]--></div> <!----><!--[!--><!--]--><!----><!----><!----><!----><!----><!--]--> <!--[!--><!--]--><!--]-->
 			
 			<script>
 				{
-					__sveltekit_13bfav2 = {
+					__sveltekit_112grdq = {
 						base: new URL(".", location).pathname.slice(0, -1)
 					};
 
@@ -372,8 +372,8 @@
 					const data = [null,null];
 
 					Promise.all([
-						import("./_app/immutable/entry/start.Dxfo1Xl8.js"),
-						import("./_app/immutable/entry/app.C5u_QAoN.js")
+						import("./_app/immutable/entry/start.CClflTLA.js"),
+						import("./_app/immutable/entry/app.CmbOXXjU.js")
 					]).then(([kit, app]) => {
 						kit.start(app, element, {
 							node_ids: [0, 2],
@@ -431,6 +431,33 @@
           });
         } catch (e) {
           console.warn("Ripple bootstrap failed:", e);
+        }
+      })();
+    </script>
+    <script>
+      (function () {
+        try {
+          if ("serviceWorker" in navigator) {
+            window.addEventListener("load", function () {
+              navigator.serviceWorker
+                .register("/sw.js")
+                .then(function () {
+                  try {
+                    navigator.serviceWorker.addEventListener(
+                      "controllerchange",
+                      function () {
+                        window.location.reload();
+                      },
+                    );
+                  } catch {}
+                })
+                .catch(function (err) {
+                  console.warn("SW registration failed:", err);
+                });
+            });
+          }
+        } catch (e) {
+          console.warn("SW bootstrap failed:", e);
         }
       })();
     </script>
