@@ -159,14 +159,7 @@
         overflow: hidden;
       }
 
-      /* Ensure chart content takes up correct space from the start */
-      .chart-container {
-        --chart-content-width: calc(100% - var(--chart-sidebar-width, 0px));
-      }
-
-      .kline-content {
-        width: var(--chart-content-width, 100%) !important;
-      }
+      /* Chart content uses flex layout; width auto within chart-shell */
 
       /* Hide sidebar completely if not visible */
       .sidebar-container[data-visible="false"] {
@@ -343,27 +336,27 @@
       }
     </style>
     
-		<link href="./_app/immutable/assets/0.C84ni--L.css" rel="stylesheet">
+		<link href="./_app/immutable/assets/0.DPtZ9CWM.css" rel="stylesheet">
 		<link href="./_app/immutable/assets/alert.B3IZgsFc.css" rel="stylesheet">
-		<link href="./_app/immutable/assets/2.DZ4S-35d.css" rel="stylesheet">
-		<link rel="modulepreload" href="./_app/immutable/entry/start.B2VFidqg.js">
-		<link rel="modulepreload" href="./_app/immutable/chunks/entry.DK0Rxwm1.js">
-		<link rel="modulepreload" href="./_app/immutable/entry/app.Bq3fGB-y.js">
-		<link rel="modulepreload" href="./_app/immutable/chunks/preload-helper.CxQk25Pu.js">
-		<link rel="modulepreload" href="./_app/immutable/chunks/i18n.DpCmikEm.js">
-		<link rel="modulepreload" href="./_app/immutable/chunks/stores.BqVJ2Edb.js">
-		<link rel="modulepreload" href="./_app/immutable/chunks/runtime.CIV-ijq3.js">
-		<link rel="modulepreload" href="./_app/immutable/nodes/0.BR4z36ph.js">
-		<link rel="modulepreload" href="./_app/immutable/chunks/alert.088aukYV.js">
-		<link rel="modulepreload" href="./_app/immutable/chunks/lifecycle.D9q4N_P7.js">
-		<link rel="modulepreload" href="./_app/immutable/nodes/2.CmqWQcMu.js"><!--[--><!--[--><!--[--><!--[--><link rel="alternate" hreflang="en" href="http://sveltekit-prerender/"><link rel="alternate" hreflang="zh-CN" href="http://sveltekit-prerender/zh-CN/"><!--]--><!--]--><!--]--><!--]-->
+		<link href="./_app/immutable/assets/2.BYfpTGX8.css" rel="stylesheet">
+		<link rel="modulepreload" href="./_app/immutable/entry/start.Bup5-3oB.js">
+		<link rel="modulepreload" href="./_app/immutable/chunks/entry.q7dF_Bhq.js">
+		<link rel="modulepreload" href="./_app/immutable/entry/app.C6mponKy.js">
+		<link rel="modulepreload" href="./_app/immutable/chunks/preload-helper.Dm3QF5gq.js">
+		<link rel="modulepreload" href="./_app/immutable/chunks/i18n.DYvt0_7T.js">
+		<link rel="modulepreload" href="./_app/immutable/chunks/stores.f8AYUWHL.js">
+		<link rel="modulepreload" href="./_app/immutable/chunks/runtime.Bof42vGW.js">
+		<link rel="modulepreload" href="./_app/immutable/nodes/0.BiY2KEbM.js">
+		<link rel="modulepreload" href="./_app/immutable/chunks/alert.BNrMTmiI.js">
+		<link rel="modulepreload" href="./_app/immutable/chunks/lifecycle.B9f3fnEv.js">
+		<link rel="modulepreload" href="./_app/immutable/nodes/2.DxH6OvSH.js"><!--[--><!--[--><!--[--><!--[--><link rel="alternate" hreflang="en" href="http://sveltekit-prerender/"><link rel="alternate" hreflang="zh-CN" href="http://sveltekit-prerender/zh-CN/"><!--]--><!--]--><!--]--><!--]-->
   </head>
   <body data-sveltekit-preload-data="hover">
     <div style="display: contents"><!--[--><!--[--><!----><!----><!----><div class="alerts-container svelte-1ykjk67"><!--[--><!--]--></div> <!----><!--[!--><!--]--><!----><!----><!----><!----><!----><!--]--> <!--[!--><!--]--><!--]-->
 			
 			<script>
 				{
-					__sveltekit_1i4ehne = {
+					__sveltekit_1u5rvsn = {
 						base: new URL(".", location).pathname.slice(0, -1)
 					};
 
@@ -372,8 +365,8 @@
 					const data = [null,null];
 
 					Promise.all([
-						import("./_app/immutable/entry/start.B2VFidqg.js"),
-						import("./_app/immutable/entry/app.Bq3fGB-y.js")
+						import("./_app/immutable/entry/start.Bup5-3oB.js"),
+						import("./_app/immutable/entry/app.C6mponKy.js")
 					]).then(([kit, app]) => {
 						kit.start(app, element, {
 							node_ids: [0, 2],
