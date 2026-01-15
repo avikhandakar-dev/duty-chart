@@ -4,6 +4,12 @@
     <meta charset="utf-8" />
     <link rel="icon" href="/favicon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
     <!-- Cache control for WebView environments (Expo, React Native) -->
     <meta
       http-equiv="Cache-Control"
@@ -17,12 +23,16 @@
         padding: 0;
         display: flex;
         flex-direction: column;
+        min-width: 0;
+        width: 100%;
       }
       body {
         min-height: 100vh;
         flex: 1;
         display: flex;
         flex-direction: column;
+        min-width: 0;
+        width: 100%;
       }
     </style>
     <script>
@@ -171,8 +181,8 @@
       .sidebar-container *,
       .chart-container,
       .chart-container *,
-      .kline-content,
-      .kline-content * {
+      .duty-content,
+      .duty-content * {
         transition: none !important;
       }
 
@@ -275,9 +285,9 @@
 
       /* ---------- Trading Typography: professional, crisp, numeric-aligned ---------- */
       :root {
-        --trading-font: ui-sans-serif, -apple-system, BlinkMacSystemFont,
-          "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Inter",
-          sans-serif;
+        --trading-font: "IBM Plex Sans", ui-sans-serif, -apple-system,
+          BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial,
+          "Noto Sans", "Inter", sans-serif;
         --trading-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
           "Liberation Mono", "Courier New", monospace;
         --trading-letter-spacing: 0.015em; /* subtle global */
@@ -290,12 +300,12 @@
       input,
       select,
       textarea,
-      .kline-main,
+      .duty-main,
       .menu-container,
       .btn,
       [data-ripple],
       .chart-container,
-      .kline-content {
+      .duty-content {
         font-family: var(--trading-font);
         line-height: var(--trading-line-height);
         letter-spacing: var(--trading-letter-spacing);
@@ -311,9 +321,9 @@
           "calt" 1;
       }
       /* Stronger label feel for actionable UI */
-      .kline-main .menu-text,
-      .kline-main .timeframe-text,
-      .kline-main .symbol-name,
+      .duty-main .menu-text,
+      .duty-main .timeframe-text,
+      .duty-main .symbol-name,
       .menu-container .menu-text,
       .menu-container .timeframe-text,
       .menu-container .symbol-name,
@@ -336,27 +346,27 @@
       }
     </style>
     
-		<link rel="modulepreload" href="/_app/immutable/entry/start.hXa_mz51.js">
-		<link rel="modulepreload" href="/_app/immutable/chunks/entry._fCxnSSv.js">
-		<link rel="modulepreload" href="/_app/immutable/entry/app.Bv6YftRH.js">
-		<link rel="modulepreload" href="/_app/immutable/chunks/preload-helper.Df2iXy6c.js">
-		<link rel="modulepreload" href="/_app/immutable/chunks/i18n.xDt4rHVf.js">
-		<link rel="modulepreload" href="/_app/immutable/chunks/stores.D6YL5VoG.js">
-		<link rel="modulepreload" href="/_app/immutable/chunks/runtime.DguwBUhj.js">
+		<link rel="modulepreload" href="/_app/immutable/entry/start.DbXxRB16.js">
+		<link rel="modulepreload" href="/_app/immutable/chunks/entry.C7I2X-K0.js">
+		<link rel="modulepreload" href="/_app/immutable/entry/app.D49NBg9x.js">
+		<link rel="modulepreload" href="/_app/immutable/chunks/preload-helper.Fmm1kQxB.js">
+		<link rel="modulepreload" href="/_app/immutable/chunks/i18n.Dv10V9mC.js">
+		<link rel="modulepreload" href="/_app/immutable/chunks/stores.D78Phzey.js">
+		<link rel="modulepreload" href="/_app/immutable/chunks/runtime.9hl-glaH.js">
   </head>
   <body data-sveltekit-preload-data="hover">
     <div style="display: contents">
 			<script>
 				{
-					__sveltekit_1l4iifz = {
+					__sveltekit_6sptni = {
 						base: ""
 					};
 
 					const element = document.currentScript.parentElement;
 
 					Promise.all([
-						import("/_app/immutable/entry/start.hXa_mz51.js"),
-						import("/_app/immutable/entry/app.Bv6YftRH.js")
+						import("/_app/immutable/entry/start.DbXxRB16.js"),
+						import("/_app/immutable/entry/app.D49NBg9x.js")
 					]).then(([kit, app]) => {
 						kit.start(app, element);
 					});
